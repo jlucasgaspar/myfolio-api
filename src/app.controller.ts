@@ -4,6 +4,6 @@ import { Controller, Get } from '@nestjs/common';
 export class AppController {
   @Get('health')
   async healthCheck() {
-    return 'Health OK!';
+    return 'Health OK! 22';
   }
 }
