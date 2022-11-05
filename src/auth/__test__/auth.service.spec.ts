@@ -27,7 +27,11 @@ describe(AuthService.name, () => {
     });
 
     it('should return user and token in success', async () => {
-      const loginUser = { email: 'ok@gmail.com', password: '123' };
+      const loginUser = {
+        email: 'ok@gmail.com',
+        password: '123',
+        phone: '123',
+      };
       await userRepositoryMock.insert(loginUser);
       const response = await sut.login(loginUser);
       expect(response.user.email).toEqual(loginUser.email);
@@ -37,14 +41,22 @@ describe(AuthService.name, () => {
 
   describe('signUp', () => {
     it('should throw if e-mail already exists', async () => {
-      const signUpUser = { email: 'new_user@gmail.com', password: '123' };
+      const signUpUser = {
+        email: 'new_user@gmail.com',
+        password: '123',
+        phone: '123',
+      };
       await userRepositoryMock.insert(signUpUser);
       const response = sut.signUp(signUpUser);
       expect(response).rejects.toThrow(BadRequestException);
     });
 
     it('should return user and token in success', async () => {
-      const newUser = { email: 'new_user@gmail.com', password: '123' };
+      const newUser = {
+        email: 'new_user@gmail.com',
+        password: '123',
+        phone: '123',
+      };
       const response = await sut.signUp(newUser);
       expect(response.user.email).toEqual(newUser.email);
       expect(response.token).toBeTruthy();
@@ -69,6 +81,7 @@ describe(AuthService.name, () => {
       const signUpResult = await sut.signUp({
         email: 'user@gmail.com',
         password: '123123',
+        phone: '123',
       });
       jest.spyOn(jwtService, 'decode').mockImplementationOnce(() => ({
         sub: signUpResult.user._id,

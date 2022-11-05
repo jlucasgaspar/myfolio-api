@@ -23,7 +23,11 @@ class ILoginResponse {
 }
 
 //* POST /signUp
-class ISignUpDTO extends ILoginDTO {}
+class ISignUpDTO extends ILoginDTO {
+  @ApiProperty({ type: String })
+  @JoiSchema(Joi.string().required())
+  phone: string;
+}
 class ISignUpResponse extends ILoginResponse {}
 
 //* GET /me

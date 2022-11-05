@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserModel } from '@/user/database/user.model';
+import { getErrorMessage } from '../i18n';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -18,19 +19,19 @@ export class AuthGuard implements CanActivate {
     const { authorization } = request.headers;
 
     if (!authorization) {
-      throw new NotFoundException('Not found');
+      throw new NotFoundException(getErrorMessage('notFound'));
     }
 
     const bearerToken = authorization.split('Bearer ')[1];
 
     if (!bearerToken) {
-      throw new NotFoundException('Invalid');
+      throw new NotFoundException(getErrorMessage('invalid'));
     }
 
     try {
       await this.jwtService.verify(bearerToken);
     } catch (err) {
-      throw new UnauthorizedException('Token expired');
+      throw new UnauthorizedException(getErrorMessage('tokenExpired'));
     }
 
     type Token = Record<string, string>;
@@ -39,7 +40,9 @@ export class AuthGuard implements CanActivate {
     const user = await UserModel.findById(userId).exec();
 
     if (!user) {
-      throw new NotFoundException('Information provided not found');
+      throw new NotFoundException(
+        getErrorMessage('informationProvidedNotFound'),
+      );
     }
 
     request.user = user;

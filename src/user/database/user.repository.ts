@@ -19,6 +19,8 @@ export class UserRepository {
   };
 
   findById: IUserRepository.FindById = async (id) => {
-    return await UserModel.findById(id).exec();
+    const result = await UserModel.findById(id).exec();
+    if (result) delete result.password;
+    return result;
   };
 }

@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import { model } from 'mongoose';
+import mongoose, { model } from 'mongoose';
+import { validateBr } from 'js-brasil';
 import { IUser } from '../dto/user.dto';
 
 const userSchema = new mongoose.Schema<IUser>({
@@ -12,6 +12,19 @@ const userSchema = new mongoose.Schema<IUser>({
   password: {
     type: String,
     required: [true, 'Password is required'],
+  },
+  phone: {
+    type: String,
+    required: [true, 'Phone is required'],
+    validate: validateBr.telefone,
+  },
+  isEmailVerified: {
+    type: Boolean,
+    default: false,
+  },
+  isPhoneVerified: {
+    type: Boolean,
+    default: false,
   },
   createdAt: {
     type: Date,

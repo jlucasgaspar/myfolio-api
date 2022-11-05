@@ -1,20 +1,38 @@
-import { Response } from 'express';
-import {
-  ExceptionFilter,
-  Catch,
-  ArgumentsHost,
-  HttpException,
-} from '@nestjs/common';
+import { Response, Request } from 'express';
+import { ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
+import { errorsEn, errorsPt } from '../i18n';
 
-@Catch(HttpException)
+@Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
-  catch(exception: HttpException, host: ArgumentsHost) {
+  catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
 
-    const statusCode = exception.message ? 400 : 500;
-    const message = exception.message || 'Internal Server Error';
+    const language = request.headers['x-language'] as string;
+    const languageIsPt = language && language.toLowerCase().includes('pt');
+    const errorMessagesObj = languageIsPt ? errorsPt : errorsEn;
 
-    return response.status(statusCode).json({ message });
+    let message = 'Internal Server Error';
+    let statusCode = 500;
+
+    if (exception.response?.isAppError) {
+      const errMessage = errorMessagesObj[exception?.response?.errorMessageKey];
+      message = errMessage || 'Need to implement this error message correctly';
+    } else if (exception.message) {
+      message = exception.message;
+    }
+
+    if (exception.status) {
+      statusCode = exception.status;
+    } else if (exception._message) {
+      statusCode = 422;
+    }
+
+    return response.status(statusCode).json({
+      message,
+      messageLang: languageIsPt ? 'pt' : 'en',
+      statusCode,
+    });
   }
 }

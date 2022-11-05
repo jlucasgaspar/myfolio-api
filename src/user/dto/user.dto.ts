@@ -16,6 +16,18 @@ export class IUser {
   @JoiSchema(Joi.string().required())
   password: string;
 
+  @ApiProperty({ type: String })
+  @JoiSchema(Joi.string().required())
+  phone: string;
+
+  @ApiPropertyOptional({ type: Boolean })
+  @JoiSchema(Joi.boolean().optional())
+  isEmailVerified?: boolean;
+
+  @ApiPropertyOptional({ type: Boolean })
+  @JoiSchema(Joi.boolean().optional())
+  isPhoneVerified?: boolean;
+
   @ApiProperty({ type: Date })
   @JoiSchema(Joi.date().required())
   createdAt: Date;

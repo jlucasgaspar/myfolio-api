@@ -11,24 +11,20 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [14.x, 16.x]
+        node-version: [16.x]
     steps:
-    - name: Use NodeJS ${{ matrix.node-version }} && tests
-      uses: actions/setup-node@v2
-      run: npm i && npm run test:cov
-      with:
-        node-version: ${{ matrix.node-version }}
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Deploy Railway
-      run: npm i -g @railway/cli && railway up
-      env:
-        RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_PROD }}
+      - name: Use NodeJS ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    # - uses: actions/checkout@v2
-    # - name: Use NodeJS ${{ matrix.node-version }}
-    #   uses: actions/setup-node@v2
-    #   with:
-    #     node-version: ${{ matrix.node-version }}
-    # - run: |
-    #     npm i
-    #     npm run test:cov
+      - name: Install packages && run tests
+        run: npm install && npm run test:cov
+
+      - name: Deploy Railway
+        run: npm i -g @railway/cli && railway up
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN_PROD }}

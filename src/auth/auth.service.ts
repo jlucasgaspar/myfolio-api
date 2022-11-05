@@ -6,6 +6,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from '@/user/database/user.repository';
 import { IAuthService } from './dto/auth-service.dto';
+import { getErrorMessage } from '@/shared/i18n';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +18,7 @@ export class AuthService {
   async signUp(params: IAuthService.SignUpDTO) {
     const userExists = await this.userRepository.findByEmail(params.email);
     if (userExists) {
-      throw new BadRequestException('User already exists');
+      throw new BadRequestException(getErrorMessage('userAlreadyExists'));
     }
     const user = await this.userRepository.insert(params);
     return {
@@ -29,7 +30,7 @@ export class AuthService {
   async login(params: IAuthService.LoginDTO) {
     const user = await this.userRepository.findByEmail(params.email, true);
     if (!user) {
-      throw new NotFoundException('E-mail do not exists');
+      throw new NotFoundException(getErrorMessage('emailDontExists'));
     }
     return {
       user,
@@ -40,13 +41,15 @@ export class AuthService {
   async refreshToken({ oldToken }: IAuthService.RefreshTokenDTO) {
     const token = oldToken.split('Bearer ')[1];
     if (!token) {
-      throw new NotFoundException('Invalid');
+      throw new NotFoundException(getErrorMessage('invalid'));
     }
     type DecodedTokenJWT = Record<string, string>;
     const { sub: userId } = this.jwtService.decode(token) as DecodedTokenJWT;
     const user = await this.userRepository.findById(userId);
     if (!user) {
-      throw new NotFoundException('Information provided not found');
+      throw new NotFoundException(
+        getErrorMessage('informationProvidedNotFound'),
+      );
     }
     return {
       user,
