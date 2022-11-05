@@ -1,6 +1,6 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserRepositoryMock } from '@/user/__test__/__mocks__/user.repository.mock';
+import { UserRepositoryMock } from '@/user/__mocks__/user.repository.mock';
 import { AuthService } from '../auth.service';
 
 describe(AuthService.name, () => {
