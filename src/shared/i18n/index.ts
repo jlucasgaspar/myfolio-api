@@ -7,5 +7,5 @@ export function getErrorMessage(errorMessageKey: keyof ErrorsI18N) {
   };
 }
 
-export * from './en';
-export * from './pt';
+export * from './locales/en';
+export * from './locales/pt';

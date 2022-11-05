@@ -23,9 +23,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
       message = exception.message;
     }
 
+    const isMongooseValidationError = exception._message;
+
     if (exception.status) {
       statusCode = exception.status;
-    } else if (exception._message) {
+    } else if (isMongooseValidationError) {
       statusCode = 422;
     }
 

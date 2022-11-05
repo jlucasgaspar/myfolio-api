@@ -1,4 +1,4 @@
-import { ErrorsI18N } from './types';
+import { ErrorsI18N } from '../types';
 
 export const errorsPt: ErrorsI18N = {
   emailDontExists: 'E-mail não encontrado',
